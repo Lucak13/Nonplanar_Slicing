@@ -209,7 +209,18 @@ def trans_gcode(orig_gcode: 'np.ndarray[np.float]', gradz: 'np.ndarray[np.float]
                         actual_g_line[:, 0] = x_new[:]
                         actual_g_line[:, 1] = y_new[:]
                         
-                        interpol_z = zmesh[np.round((actual_g_line[:,1] - y_min - y_offset)*(1/resolution)).astype(int), np.round((actual_g_line[:,0] - x_min - x_offset)*(1/resolution)).astype(int)]
+                        index_y = np.round((actual_g_line[:,1] - y_min - y_offset)*(1/resolution)).astype(int)
+                        index_x = np.round((actual_g_line[:,0] - x_min - x_offset)*(1/resolution)).astype(int)
+
+                        max_y_index = zmesh.shape[0] - 1
+                        max_x_index = zmesh.shape[1] - 1
+
+                        index_y = np.clip(index_y, 0, max_y_index)
+                        index_x = np.clip(index_x, 0, max_x_index)
+
+                        interpol_z = zmesh[index_y, index_x]
+
+                        if (np.isnan(e) == False): # if its a normal print line
 
                         if (np.isnan(e) == False): # if its a normal print line
                             
